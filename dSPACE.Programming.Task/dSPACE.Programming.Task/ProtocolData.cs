@@ -8,5 +8,6 @@ namespace dSPACE.Programming.Task
     {
         public string ProtocolId { get; set; }
         public string ProtocolsData { get; set; }
+        public List<string> Signals { get; set; }
     }
 }
