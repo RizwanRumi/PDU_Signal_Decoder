@@ -54,10 +54,7 @@ namespace dSPACE.Programming.Task
             string data = String.Empty;            
 
             while ((data = reader.ReadLine()) != null)
-            {
-                //Console.WriteLine(line);
-                //dataList.Add(data);
-                
+            {    
                 var pdu = new PduData();
                 var protocol = new ProtocolData();
 
