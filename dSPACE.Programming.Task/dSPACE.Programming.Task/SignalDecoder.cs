@@ -2,7 +2,6 @@
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using System.Data;
 
 namespace dSPACE.Programming.Task
 {
@@ -15,8 +14,6 @@ namespace dSPACE.Programming.Task
         {
             stream = null;
             reader = null;
-            //dataList = new List<string>();
-            pduDataList = new List<PduData>();
         }
 
         public SignalDecoder(string path) : this()
@@ -27,16 +24,6 @@ namespace dSPACE.Programming.Task
         ~SignalDecoder()
         {
             Close();
-        }
-
-        //public List<string> dataList
-        //{ 
-        //    get; 
-        //}
-
-        public List<PduData> pduDataList
-        {
-            get;
         }
 
         public void Open(string path)
@@ -57,33 +44,11 @@ namespace dSPACE.Programming.Task
 
             reader = new StreamReader(stream, Encoding.UTF8);
 
-            string data = String.Empty;            
+            string line = String.Empty;            
 
-            while ((data = reader.ReadLine()) != null)
+            while ((line = reader.ReadLine()) != null)
             {
-                //Console.WriteLine(line);
-                //dataList.Add(data);
-                
-                var pdu = new PduData();
-                var protocol = new ProtocolData();
-
-                if(data.Length < 5)
-                {
-                    pdu = null;
-                }
-                else
-                {
-                    pdu.PDUId = data.Substring(0, 2);
-                    pdu.PayloadData = data.Substring(2, data.Length - 2);
-
-                    protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
-                    protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
-
-                    pdu.ProtocolData = protocol;
-                }
-                
-                pduDataList.Add(pdu);
-               
+                Console.WriteLine(line);
             }
                        
         }        
