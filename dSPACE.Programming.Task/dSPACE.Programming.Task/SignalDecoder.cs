@@ -73,6 +73,39 @@ namespace dSPACE.Programming.Task
                     protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
                     protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
 
+                    string signals = protocol.ProtocolsData;
+
+                    int len = signals.Length;
+
+                    // check nibble data length and if it is odd, add extra 0 value  
+                    if (len % 2 != 0)
+                    {
+                        signals += "0";
+                        len += 1;
+                    }            
+
+                    // Create Signal_0 and Signal_1 according to ProtocolId
+                    protocol.Signals = new List<string>();
+                    
+                    string signal = "";
+                    int flag = 0;
+
+                    for (int i=0; i< len; i++) 
+                    {
+                        signal += signals[i];
+                        
+                        if (i % 2 == 1)
+                        {
+                            protocol.Signals.Add(signal);
+                            signal = "";
+                            flag++;
+
+                            if (flag == 2)
+                                break;
+                        }
+                        
+                    }
+
                     pdu.ProtocolData = protocol;
                 }                        
                 
