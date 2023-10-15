@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using dSPACE.Programming.Task;
 
@@ -24,7 +23,7 @@ namespace dSPACE.PDU.Test
             string pduTest3 = "031";
             string pduTest4 = "01";
             string pduTest5 = "0";
-            
+
             var getPdu1 = signalData.CreatePduPayloadData(pduTest1);
             Assert.IsNotNull(getPdu1, "Check string pduTest1");
 
@@ -61,6 +60,24 @@ namespace dSPACE.PDU.Test
 
             var getSignals4 = signalData.CreateSignalList(signalTest4);
             Assert.IsNull(getSignals4, "Check string signalTest4");
+        }
+
+        [Test]
+        public void GetSignal_ReturnsResults()
+        {
+            //signals : "02020101", "02012AFA", "010210" 
+            
+            string signal1 = "02012AFA";
+            int expectedSignalDecimal = 42;
+            string expectedSignalHex = "0x2A";
+            int row1 = 1;
+
+
+            var pduData = signalData.CreatePduPayloadData(signal1);
+            Program.GetSignal(pduData, row1, out int actualSignalDecimal, out string actualSignalHex);
+
+            Assert.That(actualSignalDecimal, Is.EqualTo(expectedSignalDecimal));
+            Assert.That(actualSignalHex, Is.EqualTo(expectedSignalHex));
         }
 
         public void Dispose()
