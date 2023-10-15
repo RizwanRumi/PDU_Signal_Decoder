@@ -82,44 +82,53 @@ namespace dSPACE.Programming.Task
 
                 protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
                 protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
+                protocol.Signals = CreateSignalList(protocol.ProtocolsData);                
 
-                string signals = protocol.ProtocolsData;
+                pdu.ProtocolData = protocol;
+            }
 
-                int len = signals.Length;
+            return pdu; 
+        }
 
-                // check nibble data length and if it is odd, add extra 0 value  
+        public List<string> CreateSignalList(string protocolsData)
+        {
+            var signalList = new List<string>(); 
+
+            if(protocolsData == "")
+            {
+                signalList = null;
+            }
+            else
+            {
+                int len = protocolsData.Length;
+
+                // check nibble data length and if it is odd, add extra "0" value  
                 if (len % 2 != 0)
                 {
-                    signals += "0";
+                    protocolsData += "0";
                     len += 1;
                 }
 
                 // Create Signal_0 and Signal_1 according to ProtocolId
-                protocol.Signals = new List<string>();
-
                 string signal = "";
                 int flag = 0;
 
                 for (int i = 0; i < len; i++)
                 {
-                    signal += signals[i];
+                    signal += protocolsData[i];
 
                     if (i % 2 == 1)
                     {
-                        protocol.Signals.Add(signal);
+                        signalList.Add(signal);
                         signal = "";
                         flag++;
 
                         if (flag == 2)
                             break;
                     }
-
                 }
-
-                pdu.ProtocolData = protocol;
-            }
-
-            return pdu; 
+            }            
+            return signalList;
         }
 
         public void Close()
