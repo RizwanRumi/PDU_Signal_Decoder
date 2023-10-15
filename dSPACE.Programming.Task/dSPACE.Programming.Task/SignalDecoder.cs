@@ -2,7 +2,7 @@
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using System.Data;
+
 
 namespace dSPACE.Programming.Task
 {
@@ -54,62 +54,73 @@ namespace dSPACE.Programming.Task
             string data = String.Empty;            
 
             while ((data = reader.ReadLine()) != null)
-            {    
-                var pdu = new PduData();
-                var protocol = new ProtocolData();
+            {
+                var pduData = CreatePduPayloadData(data);
+                pduDataList.Add(pduData);               
+            }                       
+        }        
 
-                if(data.Length < 5)
-                {
+        public PduData CreatePduPayloadData(string data)
+        {
+            var pdu = new PduData();
+            var protocol = new ProtocolData();
+            int dataLen = data.Length;
+
+            if (dataLen < 4)
+            {
+                if (dataLen < 2)
                     pdu = null;
-                }
                 else
                 {
-                    pdu.PDUId = data.Substring(0, 2);
-                    pdu.PayloadData = data.Substring(2, data.Length - 2);
+                    pdu.PDUId = data.Substring(0, 2);                    
+                }                
+            }
+            else
+            {
+                pdu.PDUId = data.Substring(0, 2);
+                pdu.PayloadData = data.Substring(2, data.Length - 2);
 
-                    protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
-                    protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
+                protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
+                protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
 
-                    string signals = protocol.ProtocolsData;
+                string signals = protocol.ProtocolsData;
 
-                    int len = signals.Length;
+                int len = signals.Length;
 
-                    // check nibble data length and if it is odd, add extra 0 value  
-                    if (len % 2 != 0)
+                // check nibble data length and if it is odd, add extra 0 value  
+                if (len % 2 != 0)
+                {
+                    signals += "0";
+                    len += 1;
+                }
+
+                // Create Signal_0 and Signal_1 according to ProtocolId
+                protocol.Signals = new List<string>();
+
+                string signal = "";
+                int flag = 0;
+
+                for (int i = 0; i < len; i++)
+                {
+                    signal += signals[i];
+
+                    if (i % 2 == 1)
                     {
-                        signals += "0";
-                        len += 1;
-                    }            
+                        protocol.Signals.Add(signal);
+                        signal = "";
+                        flag++;
 
-                    // Create Signal_0 and Signal_1 according to ProtocolId
-                    protocol.Signals = new List<string>();
-                    
-                    string signal = "";
-                    int flag = 0;
-
-                    for (int i=0; i< len; i++) 
-                    {
-                        signal += signals[i];
-                        
-                        if (i % 2 == 1)
-                        {
-                            protocol.Signals.Add(signal);
-                            signal = "";
-                            flag++;
-
-                            if (flag == 2)
-                                break;
-                        }
-                        
+                        if (flag == 2)
+                            break;
                     }
 
-                    pdu.ProtocolData = protocol;
-                }                        
-                
-                pduDataList.Add(pdu);               
+                }
+
+                pdu.ProtocolData = protocol;
             }
-                       
-        }        
+
+            return pdu; 
+        }
 
         public void Close()
         {
