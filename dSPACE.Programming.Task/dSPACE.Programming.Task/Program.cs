@@ -23,7 +23,7 @@ namespace dSPACE.Programming.Task
 
             try
             {
-                pduList = signalDecoder.pduDataList.ToList();
+                pduList = signalDecoder.pduDataList;
 
                 foreach (var pdu in pduList)
                 {
