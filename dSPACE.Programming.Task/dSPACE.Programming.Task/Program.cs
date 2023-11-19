@@ -35,15 +35,24 @@ namespace dSPACE.Programming.Task
                     }
                     else
                     {
-                        if (pdu.ProtocolData != null)
+                        if (pdu.ProtocolData.ProtocolId != null)
                         {
-                            if(pdu.ProtocolData.Signals != null)
-                            {                                
-                                GetSignal(pdu, row, out int sigDec, out string sigHex);
+                            int protocolIdLen = pdu.ProtocolData.ProtocolId.Length;
+
+                            if(protocolIdLen == 2)
+                            {
+                                if (pdu.ProtocolData.Signals != null)
+                                {
+                                    GetSignal(pdu, row, out int sigDec, out string sigHex);
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Signal data is missing in Row {row}");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine($"Signal data is missing in Row {row}");
+                                Console.WriteLine($"Protocol Id is invalid in Row {row}");
                             }
                         }
                         else
