@@ -42,22 +42,28 @@ namespace dSPACE.Programming.Task
              * Copy this Resource folder in dSPACE.Programming.Task\bin\Debug\netcoreapp3.1 folder
              * or copy fullpath from Resources folder and set path value.
              * For example: 
-             *  path = E:\dspace_prog_test\dSPACE.Programming.Task\dSPACE.Programming.Task\Resources\InputFile.txt;
+             *  path = "E:\dspace_prog_test\dSPACE.Programming.Task\dSPACE.Programming.Task\Resources\InputFile.txt";
              */
 
-
-            // Open a stream
-            stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-            reader = new StreamReader(stream, Encoding.UTF8);
-
-            string data = String.Empty;            
-
-            while ((data = reader.ReadLine()) != null)
+            try
             {
-                var pduData = CreatePduPayloadData(data);
-                pduDataList.Add(pduData);               
-            }                       
+                // Open a stream
+                stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+                reader = new StreamReader(stream, Encoding.UTF8);
+
+                string data = String.Empty;
+
+                while ((data = reader.ReadLine()) != null)
+                {
+                    var pduData = CreatePduPayloadData(data);
+                    pduDataList.Add(pduData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }        
 
         public PduData CreatePduPayloadData(string data)
@@ -68,7 +74,7 @@ namespace dSPACE.Programming.Task
 
             /*
              * Exp: 0102 => DataLen = 4, go to else condition and get PduID and ProtocolId without signal
-             * Exp: 010 => DataLen = 3, get PduId = 01 and ProtocolId = null
+             * Exp: 010 => DataLen = 3, get PduId = 01 and ProtocolId = 0 and it will be invalid
              * Exp: 01 => DataLen = 2, get PduId = 01 and ProtocolId = null
             */
 
