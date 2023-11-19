@@ -73,12 +73,18 @@ namespace dSPACE.Programming.Task
             */
 
             if (dataLen < 4)
-            {
+             {
                 if (dataLen < 2)
                     pdu = null;
                 else
-                {
-                    pdu.PDUId = data.Substring(0, 2);                    
+                {                    
+                    pdu.PDUId = data.Substring(0, 2);
+
+                    if (dataLen % 2 != 0)
+                    {
+                        pdu.PayloadData = data.Substring(2, data.Length - 2);
+                        protocol.ProtocolId = pdu.PayloadData;
+                    }
                 }                
             }
             else
@@ -88,13 +94,14 @@ namespace dSPACE.Programming.Task
 
                 protocol.ProtocolId = pdu.PayloadData.Substring(0, 2);
                 protocol.ProtocolsData = pdu.PayloadData.Substring(2, (pdu.PayloadData.Length - 2));
-                protocol.Signals = CreateSignalList(protocol.ProtocolsData);                
-
-                pdu.ProtocolData = protocol;
+                protocol.Signals = CreateSignalList(protocol.ProtocolsData);
             }
+
+            pdu.ProtocolData = protocol;
 
             return pdu; 
         }
+
 
         public List<string> CreateSignalList(string protocolsData)
         {
