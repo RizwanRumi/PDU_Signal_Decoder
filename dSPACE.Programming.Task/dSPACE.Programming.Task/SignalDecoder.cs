@@ -66,6 +66,12 @@ namespace dSPACE.Programming.Task
             var protocol = new ProtocolData();
             int dataLen = data.Length;
 
+            /*
+             * Exp: 0102 => DataLen = 4, go to else condition and get PduID and ProtocolId without signal
+             * Exp: 010 => DataLen = 3, get PduId = 01 and ProtocolId = null
+             * Exp: 01 => DataLen = 2, get PduId = 01 and ProtocolId = null
+            */
+
             if (dataLen < 4)
             {
                 if (dataLen < 2)
